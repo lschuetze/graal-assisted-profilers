@@ -2,6 +2,7 @@ package ch.usi.dag.profiler.allocation;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import ch.usi.dag.profiler.dump.ArchiveDumper;
 import ch.usi.dag.profiler.dump.Dumper;
@@ -44,29 +45,37 @@ public class Profiler {
 		}
 	}
 
+	public static final AtomicInteger counter = new AtomicInteger();
+	public static final int STRIDE = 1000;
+
 	public static void profileAlloc(String key, Class<?> allocType, int type) {
-		ConcurrentCounterMap which = null;
+		if (counter.get() < STRIDE) {
+			counter.incrementAndGet();
+		} else if (counter.compareAndSet(STRIDE, 0)) {
+			ConcurrentCounterMap which = null;
 
-		switch (type) {
-		case 0:
-			which = tlabAlloc;
-			break;
-		case 1:
-			which = heapAlloc;
-			break;
-		case 2:
-			which = itrprAlloc;
-			break;
-		case 3:
-			which = virtAlloc;
-			break;
-		default:
-			which = errorAlloc;
+			switch (type) {
+			case 0:
+				which = tlabAlloc;
+				break;
+			case 1:
+				which = heapAlloc;
+				break;
+			case 2:
+				which = itrprAlloc;
+				break;
+			case 3:
+				which = virtAlloc;
+				break;
+			default:
+				which = errorAlloc;
+			}
+
+			which.increment(key);
+
+			types.computeIfAbsent(key,
+					k -> ObjectSizeEvaluator.sizeof(allocType));
 		}
-
-		which.increment(key);
-
-		types.computeIfAbsent(key, k -> ObjectSizeEvaluator.sizeof(allocType));
 	}
 
 }
