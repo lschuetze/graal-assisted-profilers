@@ -49,9 +49,10 @@ public class Profiler {
 	public static final int STRIDE = 1000;
 
 	public static void profileAlloc(String key, Class<?> allocType, int type) {
-		if (counter.get() < STRIDE) {
+		int count = counter.get();
+		if (count < STRIDE) {
 			counter.incrementAndGet();
-		} else if (counter.compareAndSet(STRIDE, 0)) {
+		} else if (counter.compareAndSet(count, 0)) {
 			ConcurrentCounterMap which = null;
 
 			switch (type) {
