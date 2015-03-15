@@ -18,26 +18,23 @@ public class Instrumentation {
 
 	@AfterReturning(marker = BytecodeMarker.class, args = "new")
 	static void profileAllocation(DynamicContext dc, TypeInsnContext tic) {
-		if (__samplingCounter-- <= 0) {
-			__samplingCounter = 1000;
-			String key = tic.bci();
+		String key = tic.bci();
 
-			if (CompilerDecision.isMethodCompiled()) {
-				if (CompilerDecision.isAllocationVirtual()) {
-					Profiler.profileAlloc(key, 3);
-				} else {
-					Profiler.profileAlloc(key,
-							CompilerDecision.getAllocationType());
-				}
+		if (CompilerDecision.isMethodCompiled()) {
+			if (CompilerDecision.isAllocationVirtual()) {
+				Profiler.profileAlloc(key, 3);
 			} else {
-				Profiler.profileAlloc(key, 2);
+				Profiler.profileAlloc(key, CompilerDecision.getAllocationType());
 			}
+		} else {
+			Profiler.profileAlloc(key, 2);
 		}
 	}
 
 	@AfterReturning(marker = BodyMarker.class, scope = "java.lang.Thread.<init>")
 	static void initProfile() {
-		__samplingProfile = Profiler.createProfile();
+		__samplingCounter = 1000;
+		__samplingProfile = null;
 	}
 
 }

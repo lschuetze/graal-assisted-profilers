@@ -8,6 +8,8 @@ import ch.usi.dag.profiler.dump.Dumper;
 
 public class Profiler {
 
+	public static final LinkedList<AllocationProfile> profiles = new LinkedList<>();
+
 	public static void clearProfile() {
 		synchronized (profiles) {
 			for (AllocationProfile profile : profiles) {
@@ -17,51 +19,49 @@ public class Profiler {
 	}
 
 	public static void dumpProfile(String name) {
-		try (Dumper dumper = new ArchiveDumper(name)) {
-			final HashSet<String> keys = new HashSet<>();
-
-			for (AllocationProfile profile : profiles) {
-				profile.collectKeys(keys);
-			}
-
-			keys.stream().sorted().forEach(key -> {
-				AllocationCounter counter = new AllocationCounter();
+		synchronized (profiles) {
+			try (Dumper dumper = new ArchiveDumper(name)) {
+				final HashSet<String> keys = new HashSet<>();
 
 				for (AllocationProfile profile : profiles) {
-					profile.collectCounters(key, counter);
+					profile.collectKeys(keys);
 				}
 
-				StringBuilder builder = new StringBuilder(key);
-				builder.append(' ');
-				builder.append(counter.toString());
-				dumper.println(builder.toString());
-			});
+				keys.stream().sorted().forEach(key -> {
+					AllocationCounter counter = new AllocationCounter();
 
+					for (AllocationProfile profile : profiles) {
+						profile.collectCounters(key, counter);
+					}
+
+					StringBuilder builder = new StringBuilder(key);
+					builder.append(' ');
+					builder.append(counter.toString());
+					dumper.println(builder.toString());
+				});
+			}
 		}
-	}
-
-	public static final LinkedList<AllocationProfile> profiles = new LinkedList<>();
-
-	public static AllocationProfile createProfile() {
-		AllocationProfile profile = new AllocationProfile();
-		profiles.add(profile);
-		return profile;
 	}
 
 	public static void profileAlloc(String key, int type) {
-		AllocationProfile profile = Thread.currentThread().__samplingProfile;
+		Thread current = Thread.currentThread();
 
-		if (profile == null) {
-			profile = new AllocationProfile();
+		if (current.__samplingCounter-- <= 0) {
+			current.__samplingCounter = 1000;
+			AllocationProfile profile = current.__samplingProfile;
 
-			synchronized (profiles) {
-				profiles.add(profile);
+			if (profile == null) {
+				profile = new AllocationProfile();
+
+				synchronized (profiles) {
+					profiles.add(profile);
+				}
+
+				current.__samplingProfile = profile;
 			}
 
-			Thread.currentThread().__samplingProfile = profile;
+			profile.profileAlloc(key, type);
 		}
-
-		profile.profileAlloc(key, type);
 	}
 
 }

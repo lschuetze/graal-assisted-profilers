@@ -5,11 +5,15 @@ import java.util.HashSet;
 
 public class AllocationProfile {
 
-	public final HashMap<String, Integer> itrprAlloc = new HashMap<>();
-	public final HashMap<String, Integer> tlabAlloc = new HashMap<>();
-	public final HashMap<String, Integer> heapAlloc = new HashMap<>();
-	public final HashMap<String, Integer> virtAlloc = new HashMap<>();
-	public final HashMap<String, Integer> errorAlloc = new HashMap<>();
+	public HashMap<String, Integer> itrprAlloc;
+	public HashMap<String, Integer> tlabAlloc;
+	public HashMap<String, Integer> heapAlloc;
+	public HashMap<String, Integer> virtAlloc;
+	public HashMap<String, Integer> errorAlloc;
+
+	public AllocationProfile() {
+		clearProfile();
+	}
 
 	public void profileAlloc(String key, int type) {
 		HashMap<String, Integer> which = null;
@@ -36,11 +40,11 @@ public class AllocationProfile {
 	}
 
 	public void clearProfile() {
-		itrprAlloc.clear();
-		tlabAlloc.clear();
-		heapAlloc.clear();
-		virtAlloc.clear();
-		errorAlloc.clear();
+		itrprAlloc = new HashMap<>();
+		tlabAlloc = new HashMap<>();
+		heapAlloc = new HashMap<>();
+		virtAlloc = new HashMap<>();
+		errorAlloc = new HashMap<>();
 	}
 
 	public void collectKeys(HashSet<String> keys) {
@@ -50,34 +54,34 @@ public class AllocationProfile {
 		keys.addAll(virtAlloc.keySet());
 		keys.addAll(errorAlloc.keySet());
 	}
-	
+
 	public void collectCounters(String key, AllocationCounter counter) {
 		Integer value = itrprAlloc.get(key);
-		
+
 		if (value != null) {
 			counter.itrprCounter += value;
 		}
-		
+
 		value = tlabAlloc.get(key);
-		
+
 		if (value != null) {
 			counter.tlabCounter += value;
 		}
-		
+
 		value = heapAlloc.get(key);
-		
+
 		if (value != null) {
 			counter.heapCounter += value;
 		}
-		
+
 		value = virtAlloc.get(key);
-		
+
 		if (value != null) {
 			counter.virtCounter += value;
 		}
-		
+
 		value = errorAlloc.get(key);
-		
+
 		if (value != null) {
 			counter.errorCounter += value;
 		}
