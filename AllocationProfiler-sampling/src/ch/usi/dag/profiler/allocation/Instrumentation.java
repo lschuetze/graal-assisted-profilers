@@ -3,6 +3,7 @@ package ch.usi.dag.profiler.allocation;
 import ch.usi.dag.disl.annotation.AfterReturning;
 import ch.usi.dag.disl.annotation.ThreadLocal;
 import ch.usi.dag.disl.dynamiccontext.DynamicContext;
+import ch.usi.dag.disl.marker.BodyMarker;
 import ch.usi.dag.disl.marker.BytecodeMarker;
 
 import com.oracle.graal.debug.external.CompilerDecision;
@@ -23,15 +24,20 @@ public class Instrumentation {
 
 			if (CompilerDecision.isMethodCompiled()) {
 				if (CompilerDecision.isAllocationVirtual()) {
-					Profiler.profileAlloc(__samplingProfile, key, 3);
+					Profiler.profileAlloc(key, 3);
 				} else {
-					Profiler.profileAlloc(__samplingProfile, key,
+					Profiler.profileAlloc(key,
 							CompilerDecision.getAllocationType());
 				}
 			} else {
-				Profiler.profileAlloc(__samplingProfile, key, 2);
+				Profiler.profileAlloc(key, 2);
 			}
 		}
+	}
+
+	@AfterReturning(marker = BodyMarker.class, scope = "java.lang.Thread.<init>")
+	static void initProfile() {
+		__samplingProfile = Profiler.createProfile();
 	}
 
 }

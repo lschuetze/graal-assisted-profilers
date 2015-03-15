@@ -48,7 +48,9 @@ public class Profiler {
 		return profile;
 	}
 
-	public static void profileAlloc(AllocationProfile profile, String key, int type) {
+	public static void profileAlloc(String key, int type) {
+		AllocationProfile profile = Thread.currentThread().__samplingProfile;
+
 		if (profile == null) {
 			profile = new AllocationProfile();
 
@@ -58,7 +60,7 @@ public class Profiler {
 
 			Thread.currentThread().__samplingProfile = profile;
 		}
-		
+
 		profile.profileAlloc(key, type);
 	}
 
