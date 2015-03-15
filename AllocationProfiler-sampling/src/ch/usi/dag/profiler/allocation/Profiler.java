@@ -9,8 +9,10 @@ import ch.usi.dag.profiler.dump.Dumper;
 public class Profiler {
 
 	public static void clearProfile() {
-		for (AllocationProfile profile : profiles) {
-			profile.clearProfile();
+		synchronized (profiles) {
+			for (AllocationProfile profile : profiles) {
+				profile.clearProfile();
+			}
 		}
 	}
 

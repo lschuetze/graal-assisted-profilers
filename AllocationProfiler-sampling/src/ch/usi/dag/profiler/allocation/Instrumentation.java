@@ -17,8 +17,8 @@ public class Instrumentation {
 
 	@AfterReturning(marker = BytecodeMarker.class, args = "new")
 	static void profileAllocation(DynamicContext dc, TypeInsnContext tic) {
-//		if (__samplingCounter-- <= 0) {
-//			__samplingCounter = 1000;
+		if (__samplingCounter-- <= 0) {
+			__samplingCounter = 1000;
 			String key = tic.bci();
 
 			if (CompilerDecision.isMethodCompiled()) {
@@ -31,7 +31,7 @@ public class Instrumentation {
 			} else {
 				Profiler.profileAlloc(__samplingProfile, key, 2);
 			}
-//		}
+		}
 	}
 
 }
