@@ -53,23 +53,19 @@ public class Profiler {
 	public static void profileInvocation(String bci) {
 		Thread current = Thread.currentThread();
 
-		if (current.__samplingCounter-- <= 0) {
-			current.__samplingCounter = 1000;
+		InliningProfile profile = current.__samplingProfile;
 
-			InliningProfile profile = current.__samplingProfile;
+		if (profile == null) {
+			profile = new InliningProfile();
 
-			if (profile == null) {
-				profile = new InliningProfile();
-
-				synchronized (profiles) {
-					profiles.add(profile);
-				}
-
-				current.__samplingProfile = profile;
+			synchronized (profiles) {
+				profiles.add(profile);
 			}
 
-			profile.increment(bci);
+			current.__samplingProfile = profile;
 		}
+
+		profile.increment(bci);
 	}
 
 	public static void empty() {
