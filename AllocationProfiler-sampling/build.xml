@@ -7,7 +7,7 @@
 	<target name="compile">
 		<mkdir dir="bin" />
 		<javac includeantruntime="false" destdir="bin" srcdir="src" debug="true" classpathref="profiler.classpath">
-			<compilerarg value="-Xbootclasspath/p:extended-thread.jar"/>
+			<compilerarg value="-Xbootclasspath/p:lib-ext/extended-thread.jar"/>
 		</javac>
 	</target>
 

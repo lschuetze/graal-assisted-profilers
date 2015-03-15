@@ -19,8 +19,8 @@ public class Profiler {
 	}
 
 	public static void dumpProfile(String name) {
-		synchronized (profiles) {
-			try (Dumper dumper = new ArchiveDumper(name)) {
+		try (Dumper dumper = new ArchiveDumper(name)) {
+			synchronized (profiles) {
 				final HashSet<String> keys = new HashSet<>();
 
 				for (AllocationProfile profile : profiles) {
