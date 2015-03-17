@@ -15,7 +15,7 @@ public class Instrumentation {
 	@ThreadLocal
 	static InliningProfile __samplingProfile;
 
-	@AfterReturning(marker = BytecodeMarker.class, args = "invokevirtual, invokeinterface, invokestatic, invokespecial")
+	@AfterReturning(marker = BytecodeMarker.class, args = "invokevirtual, invokeinterface")
 	public static void profileInvocation(MethodInsnContext mic) {
 		if (CompilerDecision.isMethodCompiled()) {
 			if (!CompilerDecision.isCallsiteInlined()) {
