@@ -9,6 +9,8 @@ import ch.usi.dag.profiler.meta.ConcurrentCounterMap;
 
 public class Profiler {
 
+	public static int itr_count = 0;
+
 	public static final LinkedList<InliningProfile> profiles = new LinkedList<>();
 
 	public static final ConcurrentCounterMap notInlinedCounters = new ConcurrentCounterMap();
@@ -19,9 +21,11 @@ public class Profiler {
 				profile.clear();
 			}
 		}
+		itr_count = 0;
 	}
 
 	public static void dumpProfile(String name) {
+		System.err.println("interpreted " + itr_count);
 		try (Dumper dumper = new ArchiveDumper(name)) {
 			synchronized (profiles) {
 				final HashSet<String> keys = new HashSet<>();
@@ -69,9 +73,6 @@ public class Profiler {
 
 			profile.increment(bci);
 		}
-	}
-
-	public static void empty() {
 	}
 
 }
