@@ -34,10 +34,7 @@ public class Profiler {
 						profile.collectCounters(key, counter);
 					}
 
-					StringBuilder builder = new StringBuilder(key);
-					builder.append(' ');
-					builder.append(counter.toString());
-					dumper.println(builder.toString());
+					dumper.println(key + " " + counter.toString());
 				});
 			}
 		}
