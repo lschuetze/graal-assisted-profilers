@@ -1,74 +1,34 @@
 package ch.usi.dag.profiler.inlining;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-
 import ch.usi.dag.profiler.dump.ArchiveDumper;
 import ch.usi.dag.profiler.dump.Dumper;
-import ch.usi.dag.profiler.meta.ConcurrentCounterMap;
 
 public class Profiler {
 
-	public static final LinkedList<InliningProfile> profiles = new LinkedList<>();
+	public static final int STRIDE = 1000;
+	public static final int COUNTER_SIZE = 2 << 18;
 
-	public static final ConcurrentCounterMap notInlinedCounters = new ConcurrentCounterMap();
+	public static final int[] DCC_COUNTERS = new int[COUNTER_SIZE];
+	public static final int[] INT_COUNTERS = new int[COUNTER_SIZE];
 
 	public static void clearProfile() {
-		synchronized (profiles) {
-			for (InliningProfile profile : profiles) {
-				profile.clear();
-			}
+		for (int i = 0; i < COUNTER_SIZE; i++) {
+			DCC_COUNTERS[i] = 0;
+			INT_COUNTERS[i] = 0;
 		}
 	}
 
 	public static void dumpProfile(String name) {
 		try (Dumper dumper = new ArchiveDumper(name)) {
-			synchronized (profiles) {
-				final HashSet<String> keys = new HashSet<>();
+			for (int i = 0; i < COUNTER_SIZE; i++) {
+				int v = DCC_COUNTERS[i];
 
-				for (InliningProfile profile : profiles) {
-					keys.addAll(profile.counter.keySet());
+				if (v > 0) {
+					dumper.println(i + " " + v);
+					DCC_COUNTERS[i] = 0;
 				}
-
-				keys.stream().sorted().forEach(key -> {
-					int counter = 0;
-
-					for (InliningProfile profile : profiles) {
-						Integer current = profile.counter.get(key);
-
-						if (current != null) {
-							counter += current;
-						}
-					}
-
-					StringBuilder builder = new StringBuilder(key);
-					builder.append(' ');
-					builder.append(counter);
-					dumper.println(builder.toString());
-				});
 			}
 		}
-	}
-
-	public static void profileInvocation(String bci) {
-		Thread current = Thread.currentThread();
-
-		InliningProfile profile = current.__samplingProfile;
-
-		if (profile == null) {
-			profile = new InliningProfile();
-
-			synchronized (profiles) {
-				profiles.add(profile);
-			}
-
-			current.__samplingProfile = profile;
-		}
-
-		profile.increment(bci);
-	}
-
-	public static void empty() {
 	}
 
 }
