@@ -1,0 +1,20 @@
+#!/bin/bash
+
+all='
+avrora
+batik
+fop
+h2
+jython
+luindex
+lusearch
+pmd
+sunflow
+xalan
+'
+
+for bench in $all
+do
+  grep "completed warmup" $1-$bench.log | awk '{print $9}' | tail -n 5 | awk '{sum+=$1}END{print sum/5}'
+done
+
