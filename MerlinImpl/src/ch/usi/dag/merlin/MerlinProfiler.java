@@ -38,10 +38,8 @@ public class MerlinProfiler {
 					dead.invalidate();
 
 					if (dead.create > 0) {
-						String output = dead.toString() + "\n";
-
 						synchronized (dumper) {
-							dumper.println(output);
+							dumper.println(dead.toString());
 						}
 					}
 				}
