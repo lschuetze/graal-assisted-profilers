@@ -10,6 +10,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
+import com.oracle.graal.debug.external.DontInline;
 
 public class MerlinProfiler {
 
@@ -60,12 +61,20 @@ public class MerlinProfiler {
 
 	static final AtomicLong clock = new AtomicLong(1);
 
+	@DontInline
+	public static void onObjectAlloc(Object newObj) {
+		shadowHeap.asMap().put(newObj,
+				new ShadowObject(clock.getAndIncrement()));
+	}
+
+	@DontInline
 	public static void updateObjectUse(Object obj) {
 		if (obj != null) {
 			shadowHeap.getUnchecked(obj).update(clock.get());
 		}
 	}
 
+	@DontInline
 	public static void link(Object instance, Object value, String fieldName) {
 		if (instance != null) {
 			ShadowObject shadowInstance = shadowHeap.getUnchecked(instance);
@@ -76,11 +85,6 @@ public class MerlinProfiler {
 				shadowInstance.link(fieldName, null);
 			}
 		}
-	}
-
-	public static void onObjectAlloc(Object newObj) {
-		shadowHeap.asMap().put(newObj,
-				new ShadowObject(clock.getAndIncrement()));
 	}
 
 }
