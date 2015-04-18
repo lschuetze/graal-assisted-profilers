@@ -8,14 +8,14 @@ public class Profiler {
 	
 	public static final int CASE = 9;
 	// case 0: error
-	// case 1: 
-	// case 2: 
-	// case 3: 
-	// case 4: 
-	// case 5: 
-	// case 6: 
-	// case 7: 
-	// case 8: 
+	// case 1: +lock{stub:revoke}
+	// case 2: +lock{stub:epoch-expired}
+	// case 3: +lock{stub:failed-cas}
+	// case 4: +lock{bias:existing}
+	// case 5: +lock{bias:acquired}
+	// case 6: +lock{bias:transfer}
+	// case 7: +lock{recursive}
+	// case 8: +lock{cas}
 
 	public static final ConcurrentCounterMap counters[] = new ConcurrentCounterMap[CASE];
 
