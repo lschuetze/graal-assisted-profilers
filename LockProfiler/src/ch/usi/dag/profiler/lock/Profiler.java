@@ -1,17 +1,21 @@
-package ch.usi.dag.profiler.allocation;
+package ch.usi.dag.profiler.lock;
 
 import ch.usi.dag.profiler.dump.ArchiveDumper;
 import ch.usi.dag.profiler.dump.Dumper;
 import ch.usi.dag.profiler.meta.ConcurrentCounterMap;
 
 public class Profiler {
-
-	public static final int CASE = 5;
+	
+	public static final int CASE = 9;
 	// case 0: error
-	// case 1: thread local allocation buffer
-	// case 2: heap
-	// case 3: interpreter
-	// case 4: virtual
+	// case 1: 
+	// case 2: 
+	// case 3: 
+	// case 4: 
+	// case 5: 
+	// case 6: 
+	// case 7: 
+	// case 8: 
 
 	public static final ConcurrentCounterMap counters[] = new ConcurrentCounterMap[CASE];
 
@@ -37,7 +41,7 @@ public class Profiler {
 		}
 	}
 
-	public static void profileAlloc(String key, int type) {
+	public static void profileLock(String key, int type) {
 		counters[type].increment(key);
 	}
 

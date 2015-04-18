@@ -22,7 +22,7 @@
 	<target name="build" depends="compile,compile-callback">
 		<jar destfile="profiler.jar" basedir="bin">
 			<manifest>
-				<attribute name="DiSL-Classes" value="ch.usi.dag.profiler.allocation.Instrumentation" />
+				<attribute name="DiSL-Classes" value="ch.usi.dag.profiler.lock.Instrumentation" />
 			</manifest>
 			<zipgroupfileset dir="lib" includes="profiler-util.jar" />
 		</jar>

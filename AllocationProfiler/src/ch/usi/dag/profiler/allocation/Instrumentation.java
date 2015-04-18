@@ -14,12 +14,12 @@ public class Instrumentation {
 
 		if (CompilerDecision.isMethodCompiled()) {
 			if (CompilerDecision.isAllocationVirtual()) {
-				Profiler.profileAlloc(key, 3);
+				Profiler.profileAlloc(key, 4);
 			} else {
 				Profiler.profileAlloc(key, CompilerDecision.getAllocationType());
 			}
 		} else {
-			Profiler.profileAlloc(key, 2);
+			Profiler.profileAlloc(key, 3);
 		}
 	}
 

@@ -22,7 +22,7 @@
 	</target>
 
 	<target name="build" depends="compile,compile-callback">
-		<jar destfile="allocation-profiler.jar" basedir="bin">
+		<jar destfile="profiler.jar" basedir="bin">
 			<manifest>
 				<attribute name="DiSL-Classes" value="ch.usi.dag.profiler.allocation.Instrumentation" />
 			</manifest>
@@ -34,7 +34,7 @@
 	<target name="clean">
 		<delete dir="bin" />
 		<delete dir="bin-callback" />
-		<delete file="allocation-profiler.jar" />
+		<delete file="profiler.jar" />
 		<delete file="callback.jar" />
 	</target>
 

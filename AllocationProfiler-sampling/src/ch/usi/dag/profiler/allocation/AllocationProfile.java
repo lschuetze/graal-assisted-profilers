@@ -1,89 +1,43 @@
 package ch.usi.dag.profiler.allocation;
 
-import java.util.HashMap;
 import java.util.HashSet;
+
+import ch.usi.dag.profiler.meta.CounterMap;
 
 public class AllocationProfile {
 
-	public HashMap<String, Integer> itrprAlloc;
-	public HashMap<String, Integer> tlabAlloc;
-	public HashMap<String, Integer> heapAlloc;
-	public HashMap<String, Integer> virtAlloc;
-	public HashMap<String, Integer> errorAlloc;
+	public static final int CASE = 5;
+	// case 0: error
+	// case 1: thread local allocation buffer
+	// case 2: heap
+	// case 3: interpreter
+	// case 4: virtual
+
+	public CounterMap[] counters = new CounterMap[CASE];
 
 	public AllocationProfile() {
-		clearProfile();
+		initProfile();
 	}
 
 	public void profileAlloc(String key, int type) {
-		HashMap<String, Integer> which = null;
-
-		switch (type) {
-		case 0:
-			which = tlabAlloc;
-			break;
-		case 1:
-			which = heapAlloc;
-			break;
-		case 2:
-			which = itrprAlloc;
-			break;
-		case 3:
-			which = virtAlloc;
-			break;
-		default:
-			which = errorAlloc;
-		}
-
-		Integer count = which.get(key);
-		which.put(key, count == null ? 1 : count + 1);
+		counters[type].increment(key);
 	}
 
-	public void clearProfile() {
-		itrprAlloc = new HashMap<>();
-		tlabAlloc = new HashMap<>();
-		heapAlloc = new HashMap<>();
-		virtAlloc = new HashMap<>();
-		errorAlloc = new HashMap<>();
+	public void initProfile() {
+		for (int i = 0; i < CASE; i++) {
+			counters[i] = new CounterMap();
+		}
 	}
 
 	public void collectKeys(HashSet<String> keys) {
-		keys.addAll(itrprAlloc.keySet());
-		keys.addAll(tlabAlloc.keySet());
-		keys.addAll(heapAlloc.keySet());
-		keys.addAll(virtAlloc.keySet());
-		keys.addAll(errorAlloc.keySet());
+		for (int i = 0; i < CASE; i++) {
+			keys.addAll(counters[i].keySet());
+		}
 	}
 
-	public void collectCounters(String key, AllocationCounter counter) {
-		Integer value = itrprAlloc.get(key);
-
-		if (value != null) {
-			counter.itrprCounter += value;
-		}
-
-		value = tlabAlloc.get(key);
-
-		if (value != null) {
-			counter.tlabCounter += value;
-		}
-
-		value = heapAlloc.get(key);
-
-		if (value != null) {
-			counter.heapCounter += value;
-		}
-
-		value = virtAlloc.get(key);
-
-		if (value != null) {
-			counter.virtCounter += value;
-		}
-
-		value = errorAlloc.get(key);
-
-		if (value != null) {
-			counter.errorCounter += value;
+	public void collectCounters(String key, int[] summary) {
+		for (int i = 0; i < CASE; i++) {
+			summary[i] += counters[i].getOrDefault(key, 0);
 		}
 	}
 

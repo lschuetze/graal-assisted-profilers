@@ -13,7 +13,7 @@ public class Profiler {
 	public static void clearProfile() {
 		synchronized (profiles) {
 			for (AllocationProfile profile : profiles) {
-				profile.clearProfile();
+				profile.initProfile();
 			}
 		}
 	}
@@ -28,13 +28,20 @@ public class Profiler {
 				}
 
 				keys.stream().sorted().forEach(key -> {
-					AllocationCounter counter = new AllocationCounter();
+					int[] counters = new int[AllocationProfile.CASE];
 
 					for (AllocationProfile profile : profiles) {
-						profile.collectCounters(key, counter);
+						profile.collectCounters(key, counters);
 					}
 
-					dumper.println(key + " " + counter.toString());
+					StringBuilder builder = new StringBuilder(key);
+
+					for (int i = 0; i < AllocationProfile.CASE; i++) {
+						builder.append(' ');
+						builder.append(counters[i]);
+					}
+
+					dumper.println(builder.toString());
 				});
 			}
 		}
