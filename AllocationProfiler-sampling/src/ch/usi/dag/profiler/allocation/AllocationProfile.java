@@ -6,12 +6,10 @@ import ch.usi.dag.profiler.meta.CounterMap;
 
 public class AllocationProfile {
 
-	public static final int CASE = 5;
-	// case 0: error
+	public static final int CASE = 3;
+	// case 0: interpreter
 	// case 1: thread local allocation buffer
 	// case 2: heap
-	// case 3: interpreter
-	// case 4: virtual
 
 	public CounterMap[] counters = new CounterMap[CASE];
 

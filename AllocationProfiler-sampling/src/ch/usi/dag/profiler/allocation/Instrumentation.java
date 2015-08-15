@@ -1,12 +1,11 @@
 package ch.usi.dag.profiler.allocation;
 
+import jdk.internal.jvmci.debug.CompilerDecision;
 import ch.usi.dag.disl.annotation.AfterReturning;
 import ch.usi.dag.disl.annotation.ThreadLocal;
 import ch.usi.dag.disl.dynamiccontext.DynamicContext;
 import ch.usi.dag.disl.marker.BodyMarker;
 import ch.usi.dag.disl.marker.BytecodeMarker;
-
-import com.oracle.graal.debug.external.CompilerDecision;
 
 public class Instrumentation {
 
@@ -18,17 +17,7 @@ public class Instrumentation {
 
 	@AfterReturning(marker = BytecodeMarker.class, args = "new")
 	static void profileAllocation(DynamicContext dc, TypeInsnContext tic) {
-		String key = tic.bci();
-
-		if (CompilerDecision.isMethodCompiled()) {
-			if (CompilerDecision.isAllocationVirtual()) {
-				Profiler.profileAlloc(key, 4);
-			} else {
-				Profiler.profileAlloc(key, CompilerDecision.getAllocationType());
-			}
-		} else {
-			Profiler.profileAlloc(key, 3);
-		}
+		Profiler.profileAlloc(tic.bci(), CompilerDecision.getAllocationType());
 	}
 
 	@AfterReturning(marker = BodyMarker.class, scope = "java.lang.Thread.<init>")
