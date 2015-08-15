@@ -1,4 +1,4 @@
-<project name="AllocationProfiler" default="build" basedir=".">
+<project name="ClassProfiler" default="build" basedir=".">
 
 	<path id="profiler.classpath">
 		<fileset dir="lib" includes="*.jar" />
@@ -10,7 +10,7 @@
 	</target>
 
 	<target name="build" depends="compile">
-		<jar destfile="classsize-profiler.jar" basedir="bin">
+		<jar destfile="profiler.jar" basedir="bin">
 			<manifest>
 				<attribute name="DiSL-Classes" value="ch.usi.dag.profiler.classsize.Instrumentation" />
 			</manifest>
@@ -20,7 +20,7 @@
 
 	<target name="clean">
 		<delete dir="bin" />
-		<delete file="classsize-profiler.jar" />
+		<delete file="profiler.jar" />
 	</target>
 
 </project>
