@@ -1,4 +1,4 @@
-<project name="AllocationProfiler" default="build" basedir=".">
+<project name="LockProfiler" default="build" basedir=".">
 
 	<path id="profiler.classpath">
 		<fileset dir="lib" includes="*.jar" />
