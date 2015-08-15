@@ -21,8 +21,10 @@ public class ReceiverProfile {
 
 	@Override
 	public String toString() {
-		return counter.entrySet().stream().sorted(Entry.comparingByKey())
-				.map(Entry::toString).collect(Collectors.joining("#"));
+		return counter.values().stream().mapToInt(Integer::intValue).sum()
+				+ " "
+				+ counter.entrySet().stream().sorted(Entry.comparingByKey())
+						.map(Entry::toString).collect(Collectors.joining("#"));
 	}
 
 }

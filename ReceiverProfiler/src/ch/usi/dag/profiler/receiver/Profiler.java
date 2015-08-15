@@ -31,7 +31,7 @@ public class Profiler {
 					.forEach(
 							entry -> {
 								dumper.println(entry.getKey() + " "
-										+ entry.getValue().toString());
+										+ entry.getValue());
 							});
 		}
 	}

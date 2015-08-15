@@ -25,7 +25,7 @@ public class Profiler {
 	}
 
 	public static void dumpProfile(String name) {
-		System.err.println("interpreted " + itr_count);
+		System.err.println("interpreted invocations: " + itr_count);
 		try (Dumper dumper = new ArchiveDumper(name)) {
 			synchronized (profiles) {
 				final HashSet<String> keys = new HashSet<>();
