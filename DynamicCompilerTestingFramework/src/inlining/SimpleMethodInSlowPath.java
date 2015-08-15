@@ -1,13 +1,13 @@
-package pea;
+package inlining;
 
 import static org.junit.Assert.assertEquals;
+import inlining.target.Simple;
 import jdk.internal.jvmci.debug.CompilerDecision;
 import jdk.internal.jvmci.debug.DelimitationAPI;
 import jdk.internal.jvmci.debug.DontInline;
-import pea.target.A;
 import ch.usi.dag.testing.BaseTestCase;
 
-public class MustEscape extends BaseTestCase implements Constants {
+public class SimpleMethodInSlowPath extends BaseTestCase implements Constants {
 
 	@DontInline
 	@Override
@@ -17,19 +17,21 @@ public class MustEscape extends BaseTestCase implements Constants {
 			isCompiled = true;
 		DelimitationAPI.instrumentationEnd();
 
-		A a = new A();
+		Simple o = new Simple();
 
-		DelimitationAPI.instrumentationBegin(PRED);
-		if (CompilerDecision.isMethodCompiled())
-			counter++;
-		DelimitationAPI.instrumentationEnd();
-		// This will not be inlined and let the receiver escape
-		a.notInlinedMethod();
+		if (likely(UNLIKELY)) {
+			o.caculate(RandomGen.nextInt());
+
+			DelimitationAPI.instrumentationBegin(PRED);
+			if (CompilerDecision.isMethodCompiled())
+				counter++;
+			DelimitationAPI.instrumentationEnd();
+		}
 	}
 
 	@Override
 	public void verify() {
-		assertEquals(counter, ITERATIONS);
+		assertEquals(counter, 0);
 	}
 
 }

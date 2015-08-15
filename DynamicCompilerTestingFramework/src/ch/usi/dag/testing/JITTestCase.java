@@ -2,6 +2,8 @@ package ch.usi.dag.testing;
 
 import java.util.Random;
 
+import jdk.internal.jvmci.debug.DontInline;
+
 import org.junit.Before;
 
 public abstract class JITTestCase {
@@ -18,6 +20,7 @@ public abstract class JITTestCase {
 		}
 	}
 
+	@DontInline
 	protected final boolean likely(double probability) {
 		return random.nextDouble() < probability;
 	}

@@ -1,62 +1,40 @@
 package pea;
 
 import static org.junit.Assert.assertEquals;
+import jdk.internal.jvmci.debug.CompilerDecision;
+import jdk.internal.jvmci.debug.DelimitationAPI;
+import jdk.internal.jvmci.debug.DontInline;
+import pea.target.A;
+import ch.usi.dag.testing.BaseTestCase;
 
-import org.junit.Test;
+public class PartialEscape extends BaseTestCase implements Constants {
 
-import target.A;
-
-import com.oracle.graal.debug.external.CompilerDecision;
-import com.oracle.graal.debug.external.DontInline;
-
-import ch.usi.dag.testing.JITTestCase;
-
-public class PartialEscape extends JITTestCase {
-
-	private boolean isCompiled = false;
-	private int counter = 0;
-
-	@Override
-	protected void warmup() {
-		partialEscape(likely(Constants.PROBABILITY));
-	}
-
-	@Override
-	protected boolean isWarmedUp() {
-		return isCompiled;
-	}
+	public static final double LIKELY = 0.8;
+	public static final double EPSILON = 0.02;
 
 	@DontInline
-	public void partialEscape(boolean invokeBar) {
+	@Override
+	public void target() {
+		DelimitationAPI.instrumentationBegin(HERE);
+		if (CompilerDecision.isMethodCompiled())
+			isCompiled = true;
+		DelimitationAPI.instrumentationEnd();
+
 		A a = new A();
 
-		CompilerDecision.instrumentationBegin(Constants.PRED);
-		if (CompilerDecision.isMethodCompiled()) {
-			isCompiled = true;
+		DelimitationAPI.instrumentationBegin(PRED);
+		if (CompilerDecision.isMethodCompiled())
+			counter++;
+		DelimitationAPI.instrumentationEnd();
 
-			if (CompilerDecision.isHeapAlloc()) {
-				counter++;
-			}
-		}
-
-		CompilerDecision.instrumentationEnd();
-
-		if (invokeBar) {
+		if (likely(LIKELY))
 			// This will not be inlined and let the receiver escape
-			a.bar();
-		}
+			a.notInlinedMethod();
 	}
 
-	@Test
-	public void testPartialEscape() {
-		counter = 0;
-
-		for (int i = 0; i < Constants.ITERATIONS; i++) {
-			partialEscape(likely(Constants.PROBABILITY));
-		}
-
-		assertEquals(((double) counter) / Constants.ITERATIONS,
-				Constants.PROBABILITY, Constants.EPSILON);
+	@Override
+	public void verify() {
+		assertEquals(((double) counter) / ITERATIONS, LIKELY, EPSILON);
 	}
 
 }

@@ -1,59 +1,35 @@
 package pea;
 
 import static org.junit.Assert.assertEquals;
+import jdk.internal.jvmci.debug.CompilerDecision;
+import jdk.internal.jvmci.debug.DelimitationAPI;
+import jdk.internal.jvmci.debug.DontInline;
+import pea.target.A;
+import ch.usi.dag.testing.BaseTestCase;
 
-import org.junit.Test;
-
-import target.A;
-
-import com.oracle.graal.debug.external.CompilerDecision;
-import com.oracle.graal.debug.external.DontInline;
-
-import ch.usi.dag.testing.JITTestCase;
-
-public class NotEscape extends JITTestCase {
-
-	private boolean isCompiled = false;
-	private int counter = 0;
-
-	@Override
-	protected void warmup() {
-		notEscape();
-	}
-
-	@Override
-	protected boolean isWarmedUp() {
-		return isCompiled;
-	}
+public class NotEscape extends BaseTestCase implements Constants {
 
 	@DontInline
-	public void notEscape() {
+	@Override
+	public void target() {
+		DelimitationAPI.instrumentationBegin(HERE);
+		if (CompilerDecision.isMethodCompiled())
+			isCompiled = true;
+		DelimitationAPI.instrumentationEnd();
+
 		A a = new A();
 
-		CompilerDecision.instrumentationBegin(Constants.PRED);
-
-		if (CompilerDecision.isMethodCompiled()) {
-			isCompiled = true;
-
-			if (CompilerDecision.isHeapAlloc()) {
-				counter++;
-			}
-		}
-
-		CompilerDecision.instrumentationEnd();
-
+		DelimitationAPI.instrumentationBegin(PRED);
+		if (CompilerDecision.isMethodCompiled())
+			counter++;
+		DelimitationAPI.instrumentationEnd();
 		// This gets inlined and the receiver will not escape
-		a.getV();
+		a.empty();
 	}
 
-	@Test
-	public void testNotEscape() {
-		counter = 0;
-
-		for (int i = 0; i < Constants.ITERATIONS; i++) {
-			notEscape();
-		}
-
+	@Override
+	public void verify() {
+		// Non-escaping allocations take place on the stack.
 		assertEquals(counter, 0);
 	}
 

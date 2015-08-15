@@ -1,11 +1,15 @@
 package inlining;
 
-public class Constants {
+
+public interface Constants {
 
 	// Distance between the invocation node and the delimitation API
+	public static final int HERE = 0;
 	public static final int PRED = -1;
-	public static final int ITERATIONS = 10000;
 
-	public static final double PROBABILITY = 0.01;
 
+	public static final double LIKELY = 0.8;
+	public static final double UNLIKELY = 0.01;
+	public static final double EPSILON = 0.005;
+	
 }

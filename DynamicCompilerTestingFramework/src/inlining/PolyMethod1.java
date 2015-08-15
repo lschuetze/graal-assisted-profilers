@@ -1,13 +1,15 @@
-package pea;
+package inlining;
 
 import static org.junit.Assert.assertEquals;
+import inlining.target.Complicated;
+import inlining.target.Simple;
+import inlining.target.Super;
 import jdk.internal.jvmci.debug.CompilerDecision;
 import jdk.internal.jvmci.debug.DelimitationAPI;
 import jdk.internal.jvmci.debug.DontInline;
-import pea.target.A;
 import ch.usi.dag.testing.BaseTestCase;
 
-public class MustEscape extends BaseTestCase implements Constants {
+public class PolyMethod1 extends BaseTestCase implements Constants {
 
 	@DontInline
 	@Override
@@ -16,20 +18,19 @@ public class MustEscape extends BaseTestCase implements Constants {
 		if (CompilerDecision.isMethodCompiled())
 			isCompiled = true;
 		DelimitationAPI.instrumentationEnd();
-
-		A a = new A();
+		
+		Super o = likely(LIKELY) ? new Simple() : new Complicated();
+		o.caculate(RandomGen.nextInt());
 
 		DelimitationAPI.instrumentationBegin(PRED);
 		if (CompilerDecision.isMethodCompiled())
 			counter++;
 		DelimitationAPI.instrumentationEnd();
-		// This will not be inlined and let the receiver escape
-		a.notInlinedMethod();
 	}
 
 	@Override
 	public void verify() {
-		assertEquals(counter, ITERATIONS);
+		assertEquals(counter, 0);
 	}
 
 }
