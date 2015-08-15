@@ -9,5 +9,5 @@ import org.junit.runners.Suite.SuiteClasses;
 		AnnotatedMethod.class, ComplicatedMethod.class,
 		ComplicatedMethodInSlowPath.class, PolyMethod1.class,
 		PolyMethod2.class, PolyMethod3.class, PolyMethod4.class })
-public class InliningTestSuites {
+public class TestSuite {
 }
