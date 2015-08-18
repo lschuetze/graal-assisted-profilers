@@ -37,7 +37,7 @@ public class Profiler {
 	}
 
 	public static void profileAlloc(String key, int type) {
-		counters[type].increment(key);
+		counters[type + 1].increment(key);
 	}
-	
+
 }

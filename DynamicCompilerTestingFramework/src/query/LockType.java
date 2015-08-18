@@ -51,7 +51,7 @@ public class LockType extends JITTestCase {
 
 	@DontInline
 	private void profile(int lockType) {
-		counters[lockType]++;
+		counters[lockType + 1]++;
 	}
 
 	public class Worker extends Thread {

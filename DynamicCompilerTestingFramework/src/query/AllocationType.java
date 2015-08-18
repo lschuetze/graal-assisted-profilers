@@ -52,7 +52,7 @@ public class AllocationType extends JITTestCase {
 
 	@DontInline
 	private void profile(int allocationType) {
-		counters[allocationType]++;
+		counters[allocationType + 1]++;
 	}
 
 	@Test
