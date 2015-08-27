@@ -7,6 +7,5 @@
 	<classpathentry kind="lib" path="lib/disl-server.jar"/>
 	<classpathentry kind="lib" path="lib/profiler-util.jar"/>
 	<classpathentry kind="lib" path="lib/dacapo-9.12-bach.jar"/>
-	<classpathentry kind="lib" path="lib/jvmci-debug.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

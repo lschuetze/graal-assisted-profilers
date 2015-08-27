@@ -1,12 +1,13 @@
 package ch.usi.dag.profiler.receiver;
 
-import jdk.internal.jvmci.debug.CompilerDecision;
 import ch.usi.dag.disl.annotation.AfterReturning;
 import ch.usi.dag.disl.annotation.ThreadLocal;
 import ch.usi.dag.disl.marker.BodyMarker;
 import ch.usi.dag.disl.marker.BytecodeMarker;
 import ch.usi.dag.disl.processorcontext.ArgumentProcessorContext;
 import ch.usi.dag.disl.processorcontext.ArgumentProcessorMode;
+
+import com.oracle.graal.debug.query.GraalQueryAPI;
 
 public class Instrumentation {
 
@@ -19,7 +20,7 @@ public class Instrumentation {
 	@AfterReturning(marker = BytecodeMarker.class, args = "invokevirtual, invokeinterface")
 	public static void profileInvocation(MethodInsnContext mic,
 			ArgumentProcessorContext apc) {
-		if (CompilerDecision.isMethodCompiled()) {
+		if (GraalQueryAPI.isMethodCompiled()) {
 			Profiler.profileInvocation(mic.bci(),
 					apc.getReceiver(ArgumentProcessorMode.CALLSITE_ARGS));
 		} else {
