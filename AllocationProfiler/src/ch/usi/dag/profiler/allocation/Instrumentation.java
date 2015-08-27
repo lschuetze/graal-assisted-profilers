@@ -18,7 +18,7 @@ public class Instrumentation {
 	@AfterReturning(marker = BytecodeMarker.class, args = "new", order = 1)
 	static void profileAllocation(TypeInsnContext tic) {
 		DelimitationAPI.instrumentationBegin(0);
-		Profiler.profileAlloc(tic.bci(), 3);
+		Profiler.profileAlloc(tic.bci(), 2);
 		DelimitationAPI.instrumentationEnd();
 	}
 
