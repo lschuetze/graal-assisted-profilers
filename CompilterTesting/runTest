@@ -1,5 +1,5 @@
 #!/bin/bash
 
-mx vm -Xbootclasspath/a:../lib/graal-query.jar -G:-RemoveNeverExecutedCode -G:-InlineDuringParsing \
+mx vm -Xbootclasspath/a:../lib/graal-query.jar -G:-RemoveNeverExecutedCode -G:-InlineDuringParsing -G:-OptDeoptimizationGrouping \
     -cp ../lib/junit-4.11.jar:../lib/hamcrest-core-1.3.jar:bin \
     org.junit.runner.JUnitCore $@

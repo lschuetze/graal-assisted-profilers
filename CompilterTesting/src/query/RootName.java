@@ -67,7 +67,7 @@ public class RootName extends JITTestCase {
 			target();
 
 		assertEquals(counters.keySet().size(), 1);
-		assertTrue(counters.keySet().contains("query/RootName.target()V"));
+		assertTrue(counters.keySet().contains("query.RootName.target()V"));
 	}
 
 }
