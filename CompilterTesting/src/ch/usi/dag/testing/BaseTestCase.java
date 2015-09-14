@@ -1,5 +1,6 @@
 package ch.usi.dag.testing;
 
+import static org.junit.Assert.assertEquals;
 import jdk.internal.jvmci.hotspot.DontInline;
 
 import org.junit.Test;
@@ -7,31 +8,37 @@ import org.junit.Test;
 public abstract class BaseTestCase extends JITTestCase {
 
 	public static final int ITERATIONS = 10000;
+	public static final double DEFAULT_ERROR = 0.02;
 
 	protected boolean isCompiled = false;
 	protected int counter = 0;
 
 	@Override
-	protected void warmup() {
+	protected final void warmup() {
 		target();
 	}
 
 	@Override
-	protected boolean isWarmedUp() {
+	protected final boolean isWarmedUp() {
 		return isCompiled;
 	}
 
-	@DontInline
-	public abstract void target();
-
 	@Test
-	public void test() {
+	public final void test() {
 		counter = 0;
 		for (int i = 0; i < ITERATIONS; i++)
 			target();
 		verify();
 	}
 
-	public abstract void verify();
+	public final void verify() {
+		assertEquals(((double) counter) / ITERATIONS, expectedRatio(),
+				DEFAULT_ERROR);
+	}
+
+	@DontInline
+	public abstract void target();
+
+	public abstract double expectedRatio();
 
 }

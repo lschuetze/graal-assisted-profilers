@@ -1,6 +1,5 @@
 package pea;
 
-import static org.junit.Assert.assertEquals;
 import jdk.internal.jvmci.hotspot.DontInline;
 import pea.target.A;
 import ch.usi.dag.testing.BaseTestCase;
@@ -29,8 +28,8 @@ public class MustEscape extends BaseTestCase implements Constants {
 	}
 
 	@Override
-	public void verify() {
-		assertEquals(counter, ITERATIONS);
+	public double expectedRatio() {
+		return ESCAPE;
 	}
 
 }

@@ -1,6 +1,5 @@
 package inlining;
 
-import static org.junit.Assert.assertEquals;
 import inlining.target.Complicated;
 import jdk.internal.jvmci.hotspot.DontInline;
 import ch.usi.dag.testing.BaseTestCase;
@@ -19,17 +18,17 @@ public class ComplicatedMethod extends BaseTestCase implements Constants {
 		DelimitationAPI.instrumentationEnd();
 
 		Complicated o = new Complicated();
-		o.caculate(RandomGen.nextInt());
+		o.calculate(RandomGen.nextInt());
 
 		DelimitationAPI.instrumentationBegin(PRED);
 		if (GraalQueryAPI.isMethodCompiled())
 			counter++;
 		DelimitationAPI.instrumentationEnd();
 	}
-
+	
 	@Override
-	public void verify() {
-		assertEquals(counter, 0);
+	public double expectedRatio() {
+		return INLINE;
 	}
 
 }

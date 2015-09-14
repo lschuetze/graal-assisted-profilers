@@ -48,7 +48,7 @@ public class Factory {
 	public static class Simple1 extends Super {
 
 		@Override
-		public int caculate(int input) {
+		public int calculate(int input) {
 			return input;
 		}
 
@@ -57,7 +57,7 @@ public class Factory {
 	public static class Simple2 extends Super {
 
 		@Override
-		public int caculate(int input) {
+		public int calculate(int input) {
 			return input;
 		}
 
@@ -66,7 +66,7 @@ public class Factory {
 	public static class Simple3 extends Super {
 
 		@Override
-		public int caculate(int input) {
+		public int calculate(int input) {
 			return input;
 		}
 
@@ -75,7 +75,7 @@ public class Factory {
 	public static class Simple4 extends Super {
 
 		@Override
-		public int caculate(int input) {
+		public int calculate(int input) {
 			return input;
 		}
 
@@ -84,7 +84,7 @@ public class Factory {
 	public static class Simple5 extends Super {
 
 		@Override
-		public int caculate(int input) {
+		public int calculate(int input) {
 			return input;
 		}
 
@@ -93,7 +93,7 @@ public class Factory {
 	public static class Simple6 extends Super {
 
 		@Override
-		public int caculate(int input) {
+		public int calculate(int input) {
 			return input;
 		}
 
@@ -102,7 +102,7 @@ public class Factory {
 	public static class Simple7 extends Super {
 
 		@Override
-		public int caculate(int input) {
+		public int calculate(int input) {
 			return input;
 		}
 
@@ -111,7 +111,7 @@ public class Factory {
 	public static class Simple8 extends Super {
 
 		@Override
-		public int caculate(int input) {
+		public int calculate(int input) {
 			return input;
 		}
 
@@ -120,7 +120,7 @@ public class Factory {
 	public static class Simple9 extends Super {
 
 		@Override
-		public int caculate(int input) {
+		public int calculate(int input) {
 			return input;
 		}
 
@@ -129,7 +129,7 @@ public class Factory {
 	public static class Simple10 extends Super {
 
 		@Override
-		public int caculate(int input) {
+		public int calculate(int input) {
 			return input;
 		}
 

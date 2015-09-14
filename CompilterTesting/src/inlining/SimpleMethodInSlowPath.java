@@ -1,6 +1,5 @@
 package inlining;
 
-import static org.junit.Assert.assertEquals;
 import inlining.target.Simple;
 import jdk.internal.jvmci.hotspot.DontInline;
 import ch.usi.dag.testing.BaseTestCase;
@@ -21,7 +20,7 @@ public class SimpleMethodInSlowPath extends BaseTestCase implements Constants {
 		Simple o = new Simple();
 
 		if (likely(UNLIKELY)) {
-			o.caculate(RandomGen.nextInt());
+			o.calculate(RandomGen.nextInt());
 
 			DelimitationAPI.instrumentationBegin(PRED);
 			if (GraalQueryAPI.isMethodCompiled())
@@ -29,10 +28,10 @@ public class SimpleMethodInSlowPath extends BaseTestCase implements Constants {
 			DelimitationAPI.instrumentationEnd();
 		}
 	}
-
+	
 	@Override
-	public void verify() {
-		assertEquals(counter, 0);
+	public double expectedRatio() {
+		return INLINE;
 	}
 
 }

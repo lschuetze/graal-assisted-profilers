@@ -1,6 +1,5 @@
 package inlining;
 
-import static org.junit.Assert.assertEquals;
 import inlining.target.Complicated;
 import jdk.internal.jvmci.hotspot.DontInline;
 import ch.usi.dag.testing.BaseTestCase;
@@ -22,7 +21,7 @@ public class ComplicatedMethodInSlowPath extends BaseTestCase implements
 		Complicated o = new Complicated();
 
 		if (likely(UNLIKELY)) {
-			o.caculate(RandomGen.nextInt());
+			o.calculate(RandomGen.nextInt());
 
 			DelimitationAPI.instrumentationBegin(PRED);
 			if (GraalQueryAPI.isMethodCompiled())
@@ -30,10 +29,10 @@ public class ComplicatedMethodInSlowPath extends BaseTestCase implements
 			DelimitationAPI.instrumentationEnd();
 		}
 	}
-
+	
 	@Override
-	public void verify() {
-		assertEquals(((double) counter) / ITERATIONS, UNLIKELY, EPSILON);
+	public double expectedRatio() {
+		return NOT_INLINE * UNLIKELY;
 	}
 
 }

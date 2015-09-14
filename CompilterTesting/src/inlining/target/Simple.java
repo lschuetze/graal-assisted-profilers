@@ -3,7 +3,7 @@ package inlining.target;
 public class Simple extends Super {
 
 	@Override
-	public int caculate(int input) {
+	public int calculate(int input) {
 		return input;
 	}
 

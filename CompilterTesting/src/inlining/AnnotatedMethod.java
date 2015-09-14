@@ -1,6 +1,5 @@
 package inlining;
 
-import static org.junit.Assert.assertEquals;
 import inlining.target.Annonated;
 import jdk.internal.jvmci.hotspot.DontInline;
 import ch.usi.dag.testing.BaseTestCase;
@@ -19,17 +18,17 @@ public class AnnotatedMethod extends BaseTestCase implements Constants {
 		DelimitationAPI.instrumentationEnd();
 
 		Annonated o = new Annonated();
-		o.caculate(RandomGen.nextInt());
+		o.calculate(RandomGen.nextInt());
 
 		DelimitationAPI.instrumentationBegin(PRED);
 		if (GraalQueryAPI.isMethodCompiled())
 			counter++;
 		DelimitationAPI.instrumentationEnd();
 	}
-
+	
 	@Override
-	public void verify() {
-		assertEquals(counter, ITERATIONS);
+	public double expectedRatio() {
+		return NOT_INLINE;
 	}
 
 }

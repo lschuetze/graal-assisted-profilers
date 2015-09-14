@@ -1,6 +1,5 @@
 package pea;
 
-import static org.junit.Assert.assertEquals;
 import jdk.internal.jvmci.hotspot.DontInline;
 import pea.target.A;
 import ch.usi.dag.testing.BaseTestCase;
@@ -34,8 +33,8 @@ public class PartialEscape extends BaseTestCase implements Constants {
 	}
 
 	@Override
-	public void verify() {
-		assertEquals(((double) counter) / ITERATIONS, LIKELY, EPSILON);
+	public double expectedRatio() {
+		return ESCAPE * LIKELY;
 	}
 
 }

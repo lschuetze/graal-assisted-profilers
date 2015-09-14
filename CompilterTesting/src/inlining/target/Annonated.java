@@ -6,7 +6,7 @@ public class Annonated extends Super {
 
 	@DontInline
 	@Override
-	public int caculate(int input) {
+	public int calculate(int input) {
 		return input;
 	}
 

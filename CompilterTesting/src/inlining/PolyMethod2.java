@@ -1,6 +1,5 @@
 package inlining;
 
-import static org.junit.Assert.assertEquals;
 import inlining.target.Complicated;
 import inlining.target.Simple;
 import inlining.target.Super;
@@ -23,7 +22,7 @@ public class PolyMethod2 extends BaseTestCase implements Constants {
 		Super o = likely(LIKELY) ? new Simple() : new Complicated();
 
 		if (likely(UNLIKELY)) {
-			o.caculate(RandomGen.nextInt());
+			o.calculate(RandomGen.nextInt());
 
 			DelimitationAPI.instrumentationBegin(PRED);
 			if (GraalQueryAPI.isMethodCompiled())
@@ -33,8 +32,8 @@ public class PolyMethod2 extends BaseTestCase implements Constants {
 	}
 
 	@Override
-	public void verify() {
-		assertEquals(((double) counter) / ITERATIONS, UNLIKELY, EPSILON);
+	public double expectedRatio() {
+		return NOT_INLINE * UNLIKELY;
 	}
 
 }

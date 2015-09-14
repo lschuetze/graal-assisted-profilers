@@ -1,6 +1,5 @@
 package pea;
 
-import static org.junit.Assert.assertEquals;
 import jdk.internal.jvmci.hotspot.DontInline;
 import pea.target.A;
 import ch.usi.dag.testing.BaseTestCase;
@@ -29,9 +28,8 @@ public class NotEscape extends BaseTestCase implements Constants {
 	}
 
 	@Override
-	public void verify() {
-		// Non-escaping allocations take place on the stack.
-		assertEquals(counter, 0);
+	public double expectedRatio() {
+		return NOT_ESCAPE;
 	}
 
 }
