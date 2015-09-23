@@ -5,12 +5,13 @@ import jdk.internal.jvmci.hotspot.DontInline;
 
 import org.junit.Test;
 
+import pea.target.A;
 import ch.usi.dag.testing.JITTestCase;
 
 import com.oracle.graal.debug.query.DelimitationAPI;
 import com.oracle.graal.debug.query.GraalQueryAPI;
 
-public class LockType extends JITTestCase {
+public class LockType2 extends JITTestCase {
 
 	public static final int PRED = -1;
 	public static final int HERE = 0;
@@ -40,13 +41,17 @@ public class LockType extends JITTestCase {
 			isCompiled = true;
 		DelimitationAPI.instrumentationEnd();
 
-		synchronized (this) {
+		A a = new A();
+
+		synchronized (a) {
 			DelimitationAPI.instrumentationBegin(PRED);
 			if (GraalQueryAPI.isMethodCompiled())
 				profile(GraalQueryAPI.getLockType());
 			DelimitationAPI.instrumentationEnd();
 
-			data++;
+			if (likely(LIKELY)) {
+				a.notInlinedMethod();
+			}
 		}
 	}
 
