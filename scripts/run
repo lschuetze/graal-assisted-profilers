@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo $@
+
+BASEDIR=$(dirname $0)
+INSTRUMENTATION_LIB=$1
+shift
+
+$DISL_HOME/bin/disl.py -d $DISL_HOME/output/ -cs -i=${INSTRUMENTATION_LIB} \
+    -c_opts="-Xbootclasspath/p:lib/extended-thread.jar -XX:-BootstrapJVMCI" \
+    -c_opts="-XX:+TieredCompilation -G:-RemoveNeverExecutedCode" \
+    -c_opts="-G:+UseGraalInstrumentation -G:-InlineDuringParsing" \
+    -c_opts="-G:SmallCompiledLowLevelGraphSize=0" \
+    -c_app="$@" \
+    -s_exclusionlist=${BASEDIR}/config/excl.lst
+

@@ -1,26 +1,6 @@
 <project name="InliningProfiler" default="build" basedir=".">
 
-	<path id="profiler.classpath">
-		<fileset dir="lib" includes="*.jar" />
-	</path>
-
-	<target name="compile">
-		<mkdir dir="bin" />
-		<javac includeantruntime="false" destdir="bin" srcdir="src" debug="true" classpathref="profiler.classpath" />
-	</target>
-
-	<target name="build" depends="compile">
-		<jar destfile="profiler.jar" basedir="bin">
-			<manifest>
-				<attribute name="DiSL-Classes" value="ch.usi.dag.profiler.inlining.Instrumentation" />
-			</manifest>
-			<zipgroupfileset dir="lib" includes="profiler-util.jar" />
-		</jar>
-	</target>
-
-	<target name="clean">
-		<delete dir="bin" />
-		<delete file="profiler.jar" />
-	</target>
+	<property name="instrumentation" value="ch.usi.dag.profiler.inlining.Instrumentation" />
+	<import file="../config/build-profiler.xml" />
 
 </project>

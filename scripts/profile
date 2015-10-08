@@ -1,0 +1,14 @@
+#!/bin/bash
+
+BASEDIR=$(dirname $0)
+ITERATIONS="-n 15"
+WORKLOAD="-s default"
+
+mkdir -p output
+
+for bench in `cat ${BASEDIR}/../config/bench.txt`
+do
+    ${BASEDIR}/run $1 "-cp ${DACAPO_PATH} Harness ${bench} ${WORKLOAD} ${ITERATIONS}" 2>&1 | tee output/AP-${bench}.log
+    mv *.gz output/
+done
+
