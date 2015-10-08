@@ -12,16 +12,16 @@ import ch.usi.dag.disl.staticcontext.BytecodeStaticContext;
 public class Instrumentation {
 
 	@AfterReturning(marker = BytecodeMarker.class, args = "monitorenter")
-	static void profileAllocation(DynamicContext dc, BytecodeStaticContext bsc) {
+	static void profileAllocation(DynamicContext dc, BytecodeStaticContext context) {
 		GraalDirectives.instrumentationBegin(-1);
-		Profiler.profileLock(bsc.bci(), GraalDirectives.runtimePath());
+		Profiler.profileLock(context.bci(), GraalDirectives.runtimePath());
 		GraalDirectives.instrumentationEnd();
 	}
 
 	@Before(marker = BodyMarker.class, guard = MethodIsSynchronizedGuard.class)
-	public static void onSynchronizedMethodEntry(BytecodeStaticContext bsc) {
+	public static void onSynchronizedMethodEntry(BytecodeStaticContext context) {
 		GraalDirectives.instrumentationBegin(-1);
-		Profiler.profileLock(bsc.bci(), GraalDirectives.runtimePath());
+		Profiler.profileLock(context.bci(), GraalDirectives.runtimePath());
 		GraalDirectives.instrumentationEnd();
 	}
 

@@ -4,6 +4,6 @@ public interface SiteProfile<T> {
 
 	T copy();
 
-	void merge(T other);
+	T merge(T other);
 
 }

@@ -14,16 +14,15 @@ public class MultiCounterSiteProfile implements SiteProfile<MultiCounterSiteProf
 
 	@Override
 	public MultiCounterSiteProfile copy() {
-		MultiCounterSiteProfile copy = new MultiCounterSiteProfile(counters.length);
-		copy.merge(this);
-		return copy;
+		return new MultiCounterSiteProfile(counters.length).merge(this);
 	}
 
 	@Override
-	public void merge(MultiCounterSiteProfile other) {
+	public MultiCounterSiteProfile merge(MultiCounterSiteProfile other) {
 		for (int i = 0; i < counters.length; i++) {
 			counters[i] += other.counters[i];
 		}
+		return this;
 	}
 
 	@Override

@@ -1,20 +1,31 @@
-package ch.usi.dag.profiler.receiver;
+package ch.usi.dag.profiler.staticcontext;
 
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.util.Printer;
 
 import ch.usi.dag.disl.staticcontext.BytecodeStaticContext;
 
-public class MethodInsnContext extends BytecodeStaticContext {
+public class EnhancedBytecodeStaticContext extends BytecodeStaticContext {
+
+	public String typeName() {
+		AbstractInsnNode instruction = staticContextData.getRegionStart();
+
+		if (instruction instanceof TypeInsnNode) {
+			return ((TypeInsnNode) instruction).desc;
+		} else {
+			throw new IllegalArgumentException("support only TypeInsnNode");
+		}
+	}
 
 	public String invokeTarget() {
-		StringBuilder builder = new StringBuilder();
 		AbstractInsnNode instruction = staticContextData.getRegionStart();
 
 		if (instruction instanceof MethodInsnNode) {
+			StringBuilder builder = new StringBuilder();
 			MethodInsnNode min = (MethodInsnNode) instruction;
 			builder.append(Printer.OPCODES[instruction.getOpcode()]);
 			builder.append(' ');
@@ -22,18 +33,18 @@ public class MethodInsnContext extends BytecodeStaticContext {
 			builder.append('.');
 			builder.append(min.name);
 			builder.append(min.desc);
+			return builder.toString();
+		} else {
+			throw new IllegalArgumentException("support only MethodInsnNode");
 		}
-
-		return builder.toString();
 	}
 
-	public String bci() {
-		StringBuilder builder = new StringBuilder();
-
+	public String bciGraalGeneral() {
 		ClassNode classNode = staticContextData.getClassNode();
 		MethodNode methodNode = staticContextData.getMethodNode();
 		AbstractInsnNode instruction = staticContextData.getRegionStart();
 
+		StringBuilder builder = new StringBuilder();
 		builder.append(classNode.name.replace('/', '.'));
 		builder.append('.');
 		builder.append(methodNode.name);
@@ -43,12 +54,17 @@ public class MethodInsnContext extends BytecodeStaticContext {
 		builder.append(' ');
 		builder.append(methodNode.desc);
 
-		if (instruction instanceof MethodInsnNode) {
-			builder.append(' ');
-			builder.append(invokeTarget());
-		}
-
 		return builder.toString();
+	}
+
+	public String bciGraal() {
+		AbstractInsnNode instruction = staticContextData.getRegionStart();
+		if (instruction instanceof TypeInsnNode) {
+			return bciGraalGeneral() + " " + typeName();
+		} else if (instruction instanceof MethodInsnNode) {
+			return bciGraalGeneral() + " " + invokeTarget();
+		}
+		return bciGraalGeneral();
 	}
 
 }

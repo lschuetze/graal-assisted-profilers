@@ -4,6 +4,10 @@
 		<mkdir dir="bin" />
 		<javac includeantruntime="false" destdir="bin" srcdir="src" debug="true">
 			<compilerarg value="-Xbootclasspath/p:lib/extended-thread.jar" />
+			<classpath>
+				<path location="lib/asm-debug-all-5.0.3.jar" />
+				<path location="lib/disl-server.jar" />
+			</classpath>
 		</javac>
 	</target>
 

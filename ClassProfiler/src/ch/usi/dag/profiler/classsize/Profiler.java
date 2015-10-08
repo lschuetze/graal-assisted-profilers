@@ -1,5 +1,6 @@
 package ch.usi.dag.profiler.classsize;
 
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import ch.usi.dag.profiler.dump.ArchiveDumper;
@@ -16,9 +17,8 @@ public class Profiler {
 
 	public static void dump() {
 		try (Dumper dumper = new ArchiveDumper("class-size")) {
-			types.keySet().stream().forEach(type -> {
-				dumper.println(type + " " + types.get(type));
-			});
+			types.entrySet().stream().sorted(Entry.comparingByKey()).map(e -> e.getKey() + " " + e.getValue())
+					.forEach(dumper::println);
 		}
 	}
 

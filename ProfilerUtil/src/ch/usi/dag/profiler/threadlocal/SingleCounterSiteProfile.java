@@ -10,14 +10,13 @@ public class SingleCounterSiteProfile implements SiteProfile<SingleCounterSitePr
 
 	@Override
 	public SingleCounterSiteProfile copy() {
-		SingleCounterSiteProfile copy = new SingleCounterSiteProfile();
-		copy.merge(this);
-		return copy;
+		return new SingleCounterSiteProfile().merge(this);
 	}
 
 	@Override
-	public void merge(SingleCounterSiteProfile other) {
+	public SingleCounterSiteProfile merge(SingleCounterSiteProfile other) {
 		counter += other.counter;
+		return this;
 
 	}
 
