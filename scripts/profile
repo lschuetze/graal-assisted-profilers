@@ -8,7 +8,7 @@ mkdir -p output
 
 for bench in `cat ${BASEDIR}/../config/bench.txt`
 do
-    ${BASEDIR}/run $1 "-cp ${DACAPO_PATH} Harness ${bench} ${WORKLOAD} ${ITERATIONS}" 2>&1 | tee output/AP-${bench}.log
+    ${BASEDIR}/run $1 "-cp $2 Harness ${bench} ${WORKLOAD} ${ITERATIONS}" 2>&1 | tee output/AP-${bench}.log
     mv *.gz output/
 done
 

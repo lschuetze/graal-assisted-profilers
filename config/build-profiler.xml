@@ -13,7 +13,7 @@
 		<mkdir dir="build"/>
 		<jar destfile="build/profiler.jar" basedir="bin">
 			<manifest>
-                <attribute name="DiSL-Classes" value="${instrumentation}" />
+                <attribute name="DiSL-Classes" value="${instrumentation},ch.usi.dag.profiler.threadlocal.Instrumentation" />
 			</manifest>
 			<zipgroupfileset dir="lib" includes="profiler-util.jar" />
 		</jar>
