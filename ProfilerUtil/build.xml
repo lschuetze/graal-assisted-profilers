@@ -2,16 +2,31 @@
 
 	<target name="compile">
 		<mkdir dir="bin" />
-		<javac includeantruntime="false" destdir="bin" srcdir="src" debug="true" />
+		<javac includeantruntime="false" destdir="bin" srcdir="src" debug="true">
+			<compilerarg value="-Xbootclasspath/p:lib/extended-thread.jar" />
+		</javac>
 	</target>
 
-	<target name="build" depends="compile">
+	<target name="compile-callback">
+		<mkdir dir="bin-dacapo" />
+		<javac includeantruntime="false" destdir="bin-dacapo" srcdir="src-dacapo" debug="true">
+			<classpath>
+				<path location="lib/dacapo-harness.jar" />
+				<path location="bin" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="build" depends="compile, compile-callback">
 		<jar destfile="profiler-util.jar" basedir="bin" />
+		<jar destfile="callback.jar" basedir="bin-dacapo" />
 	</target>
 
 	<target name="clean">
 		<delete dir="bin" />
+		<delete dir="bin-dacapo" />
 		<delete file="profiler-util.jar" />
+		<delete file="callback.jar" />
 	</target>
 
 </project>

@@ -17,4 +17,17 @@ public class TypeInsnContext extends BytecodeStaticContext {
 		}
 	}
 
+	public String bci() {
+		StringBuilder builder = new StringBuilder(super.bci());
+		AbstractInsnNode instruction = staticContextData.getRegionStart();
+
+		if (instruction instanceof TypeInsnNode) {
+			TypeInsnNode tin = (TypeInsnNode) instruction;
+			builder.append(' ');
+			builder.append(tin.desc);
+		}
+
+		return builder.toString();
+	}
+
 }

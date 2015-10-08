@@ -2,8 +2,7 @@ java.*.*
 sun.*.*
 javax.*.*
 com.sun.*.*
-com.oracle.graal.*.*
+com.oracle.*.*
 jdk.*.*
+oracle.*.*
 ch.usi.*.*
-com.google.*.*
-*$py.test$*
