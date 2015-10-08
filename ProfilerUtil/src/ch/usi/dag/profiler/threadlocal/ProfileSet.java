@@ -8,58 +8,59 @@ import ch.usi.dag.profiler.dump.ArchiveDumper;
 import ch.usi.dag.profiler.dump.Dumper;
 import ch.usi.dag.profiler.dump.TTYDumper;
 
-public class ProfileSet {
+public class ProfileSet<T extends SiteProfile<T>> {
 
-	static final ConcurrentLinkedQueue<MetaProfile<? extends SiteProfile<?>>> profiles = new ConcurrentLinkedQueue<>();
+	private static final boolean DUMP_AT_SHUTDOWN = Boolean.getBoolean("dumptotty");
+
+	private final Supplier<T> siteProfileSupplier;
+	private final ConcurrentLinkedQueue<MetaProfile<T>> profiles = new ConcurrentLinkedQueue<>();
+
+	public ProfileSet(Supplier<T> supplier) {
+		siteProfileSupplier = supplier;
+		if (DUMP_AT_SHUTDOWN) {
+			Runtime.getRuntime().addShutdownHook(new Thread(this::dumpToTTY));
+		}
+	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends MetaProfile<? extends SiteProfile<?>>> T getProfile(Supplier<T> supplier) {
+	public T getSiteProfile(String key) {
 		Thread current = Thread.currentThread();
-		T profile = (T) current.__profile;
-		if (profile == null) {
-			profile = supplier.get();
-			profiles.add(profile);
-			current.__profile = profile;
+		MetaProfile<T> metaProfile = (MetaProfile<T>) current.__profile;
+		if (metaProfile == null) {
+			metaProfile = new MetaProfile<>();
+			profiles.add(metaProfile);
+			current.__profile = metaProfile;
 		}
-		return profile;
+		return metaProfile.getProfile(key, siteProfileSupplier);
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T extends MetaProfile<? extends SiteProfile<?>>> void forEach(Consumer<T> consumer) {
-		for (MetaProfile<? extends SiteProfile<?>> profile : profiles) {
-			consumer.accept((T) profile);
+	public void forEach(Consumer<MetaProfile<T>> consumer) {
+		for (MetaProfile<T> profile : profiles) {
+			consumer.accept(profile);
 		}
 	}
 
-	public static void reset() {
+	public void reset() {
 		profiles.clear();
 	}
 
-	static void dump(Dumper dumper) {
-		MetaProfile<?> collector = new MetaProfile<>();
-		ProfileSet.forEach(collector::merge);
+	private void dump(Dumper dumper) {
+		MetaProfile<T> collector = new MetaProfile<>();
+		forEach(collector::merge);
 		collector.forEach(entry -> {
 			dumper.println(entry.getKey() + " " + entry.getValue());
 		});
 	}
 
-	public static void dumpToTTY() {
+	public void dumpToTTY() {
 		try (TTYDumper dumper = new TTYDumper()) {
 			dump(dumper);
 		}
 	}
 
-	public static void dumpToArchieve(String filename) {
+	public void dumpToArchieve(String filename) {
 		try (Dumper dumper = new ArchiveDumper(filename)) {
 			dump(dumper);
-		}
-	}
-	
-	static final boolean DUMP_AT_SHUTDOWN = Boolean.getBoolean("dumptotty");
-
-	public static void dumpToTTYAtShutdownIfEnable() {
-		if (DUMP_AT_SHUTDOWN) {
-			Runtime.getRuntime().addShutdownHook(new Thread(ProfileSet::dumpToTTY));
 		}
 	}
 

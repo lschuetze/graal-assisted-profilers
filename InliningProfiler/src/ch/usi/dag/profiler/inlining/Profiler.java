@@ -1,28 +1,47 @@
 package ch.usi.dag.profiler.inlining;
 
-import ch.usi.dag.profiler.dump.ArchiveDumper;
-import ch.usi.dag.profiler.dump.Dumper;
-import ch.usi.dag.profiler.meta.ConcurrentCounterMap;
+import ch.usi.dag.profiler.threadlocal.ProfileSet;
+import ch.usi.dag.profiler.threadlocal.SamplingClock;
+import ch.usi.dag.profiler.threadlocal.SiteProfile;
 
 public class Profiler {
 
-	public static final ConcurrentCounterMap notInlinedCounters = new ConcurrentCounterMap();
-
-	public static void clearProfile() {
-		notInlinedCounters.clear();
-	}
-
-	public static void dumpProfile(String name) {
-		try (Dumper dumper = new ArchiveDumper(name)) {
-			notInlinedCounters.dump(dumper);
+	public static int itr_count = 0;
+	
+	static final ProfileSet<CallSiteProfile> profiler = new ProfileSet<>(CallSiteProfile::new);
+	
+	public static void profileInvocation(String key) {
+		if (SamplingClock.shouldProfile()) {
+			CallSiteProfile siteProfile = profiler.getSiteProfile(key);
+			siteProfile.increment();
 		}
 	}
 
-	public static void profileInvocation(String bci) {
-		notInlinedCounters.increment(bci);
-	}
+	static class CallSiteProfile implements SiteProfile<CallSiteProfile> {
 
-	public static void empty() {
+		int counter = 0;
+
+		public void increment() {
+			counter++;
+		}
+
+		@Override
+		public CallSiteProfile copy() {
+			CallSiteProfile copy = new CallSiteProfile();
+			copy.merge(this);
+			return copy;
+		}
+
+		@Override
+		public void merge(CallSiteProfile other) {
+			counter += other.counter;
+		}
+
+		@Override
+		public String toString() {
+			return Integer.toString(counter);
+		}
+
 	}
 
 }

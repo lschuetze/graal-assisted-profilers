@@ -1,21 +1,16 @@
 package ch.usi.dag.profiler.allocation;
 
-import java.util.function.Supplier;
-
-import ch.usi.dag.profiler.threadlocal.MetaProfile;
 import ch.usi.dag.profiler.threadlocal.ProfileSet;
 import ch.usi.dag.profiler.threadlocal.SamplingClock;
 import ch.usi.dag.profiler.threadlocal.SiteProfile;
 
 public class Profiler {
 
-	static final Supplier<MetaProfile<AllocationSiteProfile>> NEW_METAPROFILE = MetaProfile::new;
-	static final Supplier<AllocationSiteProfile> NEW_SITEPROFILE = AllocationSiteProfile::new;
+	static final ProfileSet<AllocationSiteProfile> profiler = new ProfileSet<>(AllocationSiteProfile::new);
 
 	public static void profileAllocation(String key, int type) {
 		if (SamplingClock.shouldProfile()) {
-			MetaProfile<AllocationSiteProfile> metaProfile = ProfileSet.getProfile(NEW_METAPROFILE);
-			AllocationSiteProfile siteProfile = metaProfile.getProfile(key, NEW_SITEPROFILE);
+			AllocationSiteProfile siteProfile = profiler.getSiteProfile(key);
 			siteProfile.increment(type);
 		}
 	}
@@ -59,10 +54,6 @@ public class Profiler {
 			return builder.toString();
 		}
 
-	}
-
-	static {
-		ProfileSet.dumpToTTYAtShutdownIfEnable();
 	}
 
 }
