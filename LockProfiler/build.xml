@@ -9,31 +9,18 @@
 		<javac includeantruntime="false" destdir="bin" srcdir="src" debug="true" classpathref="profiler.classpath" />
 	</target>
 
-	<target name="compile-callback">
-		<mkdir dir="bin-callback" />
-		<javac includeantruntime="false" destdir="bin-callback" srcdir="src-callback" debug="true">
-			<classpath>
-				<path refid="profiler.classpath" />
-				<path location="bin" />
-			</classpath>
-		</javac>
-	</target>
-
-	<target name="build" depends="compile,compile-callback">
+	<target name="build" depends="compile">
 		<jar destfile="profiler.jar" basedir="bin">
 			<manifest>
 				<attribute name="DiSL-Classes" value="ch.usi.dag.profiler.lock.Instrumentation" />
 			</manifest>
 			<zipgroupfileset dir="lib" includes="profiler-util.jar" />
 		</jar>
-		<jar destfile="callback.jar" basedir="bin-callback" />
 	</target>
 
 	<target name="clean">
 		<delete dir="bin" />
-		<delete dir="bin-callback" />
 		<delete file="profiler.jar" />
-		<delete file="callback.jar" />
 	</target>
 
 </project>

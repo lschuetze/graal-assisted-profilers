@@ -1,12 +1,10 @@
 package ch.usi.dag.profiler.lock;
 
-import ch.usi.dag.profiler.dump.ArchiveDumper;
-import ch.usi.dag.profiler.dump.Dumper;
-import ch.usi.dag.profiler.meta.ConcurrentCounterMap;
+import ch.usi.dag.profiler.threadlocal.MultiCounterSiteProfile;
+import ch.usi.dag.profiler.threadlocal.ProfileSet;
+import ch.usi.dag.profiler.threadlocal.SamplingClock;
 
 public class Profiler {
-
-	public static final int CASE = 8;
 
 	// case 0: Interpreter
 	// case 1: +lock{bias:existing}
@@ -16,33 +14,15 @@ public class Profiler {
 	// case 5: +lock{stub:failed-cas}
 	// case 6: +lock{recursive}
 	// case 7: +lock{cas}
+	public static final int CASE = 8;
 
-	public static final ConcurrentCounterMap counters[] = new ConcurrentCounterMap[CASE];
-
-	static {
-		initProfile();
-	}
-
-	public static void initProfile() {
-		for (int i = 0; i < CASE; i++) {
-			counters[i] = new ConcurrentCounterMap();
-		}
-	}
-
-	public static void clearProfile() {
-		for (int i = 0; i < CASE; i++) {
-			counters[i].clear();
-		}
-	}
-
-	public static void dumpProfile(String name) {
-		try (Dumper dumper = new ArchiveDumper(name)) {
-			ConcurrentCounterMap.compare(dumper, counters);
-		}
-	}
+	static final ProfileSet<MultiCounterSiteProfile> profiler = ProfileSet
+			.getInstance(() -> new MultiCounterSiteProfile(CASE));
 
 	public static void profileLock(String key, int type) {
-		counters[type + 1].increment(key);
+		if (SamplingClock.shouldProfile()) {
+			profiler.getSiteProfile(key).increment(type + 1);
+		}
 	}
 
 }

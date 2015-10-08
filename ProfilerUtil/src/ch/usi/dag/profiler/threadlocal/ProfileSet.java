@@ -15,7 +15,7 @@ public class ProfileSet<T extends SiteProfile<T>> {
 	private final Supplier<T> siteProfileSupplier;
 	private final ConcurrentLinkedQueue<MetaProfile<T>> profiles = new ConcurrentLinkedQueue<>();
 
-	public ProfileSet(Supplier<T> supplier) {
+	private ProfileSet(Supplier<T> supplier) {
 		siteProfileSupplier = supplier;
 		if (DUMP_AT_SHUTDOWN) {
 			Runtime.getRuntime().addShutdownHook(new Thread(this::dumpToTTY));
@@ -40,10 +40,6 @@ public class ProfileSet<T extends SiteProfile<T>> {
 		}
 	}
 
-	public void reset() {
-		profiles.clear();
-	}
-
 	private void dump(Dumper dumper) {
 		MetaProfile<T> collector = new MetaProfile<>();
 		forEach(collector::merge);
@@ -61,6 +57,34 @@ public class ProfileSet<T extends SiteProfile<T>> {
 	public void dumpToArchieve(String filename) {
 		try (Dumper dumper = new ArchiveDumper(filename)) {
 			dump(dumper);
+		}
+	}
+
+	private static volatile ProfileSet<?> profiler;
+
+	@SuppressWarnings("unchecked")
+	public static <T extends SiteProfile<T>> ProfileSet<T> getInstance(Supplier<T> supplier) {
+		ProfileSet<T> result = (ProfileSet<T>) profiler;
+		if (result == null) {
+			synchronized (ProfileSet.class) {
+				result = (ProfileSet<T>) profiler;
+				if (result == null) {
+					profiler = result = new ProfileSet<>(supplier);
+				}
+			}
+		}
+		return result;
+	}
+
+	public static void reset() {
+		if (profiler != null) {
+			profiler.profiles.clear();
+		}
+	}
+
+	public static void dump(String filename) {
+		if (profiler != null) {
+			profiler.dumpToArchieve(filename);
 		}
 	}
 

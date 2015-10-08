@@ -22,7 +22,7 @@ public class ProfilerCallback extends Callback {
 	@Override
 	public void complete(String benchmark, boolean valid, boolean warmup) {
 		super.complete(benchmark, valid, warmup);
-		ProfileSet.dumpToArchieve(benchmark + "-" + iteration++);
+		ProfileSet.dump(benchmark + "-" + iteration++);
 	}
 
 }
