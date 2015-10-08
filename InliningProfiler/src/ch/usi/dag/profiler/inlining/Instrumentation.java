@@ -10,12 +10,14 @@ public class Instrumentation {
 
 	@AfterReturning(marker = BytecodeMarker.class, args = "invokevirtual, invokespecial, invokestatic, invokeinterface")
 	public static void profileInvocation(EnhancedBytecodeStaticContext context) {
+		GraalDirectives.instrumentationToInvokeBegin(-1);
 		if (GraalDirectives.inCompiledCode()) {
 			Profiler.profileInvocation(context.bciGraal());
 		} else {
 			// This is for resolving Profiler.class, no need to be thread-safe
 			Profiler.itr_count++;
 		}
+		GraalDirectives.instrumentationEnd();
 	}
 
 }
