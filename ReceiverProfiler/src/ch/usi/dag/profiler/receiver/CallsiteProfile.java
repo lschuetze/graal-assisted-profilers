@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import ch.usi.dag.profiler.threadlocal.SingleCounterSiteProfile;
-import ch.usi.dag.profiler.threadlocal.SiteProfile;
+import ch.usi.dag.profiler.common.SiteProfile;
+import ch.usi.dag.profiler.library.SingleCounterSiteProfile;
 
 public class CallsiteProfile implements SiteProfile<CallsiteProfile> {
 

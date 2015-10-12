@@ -1,4 +1,6 @@
-package ch.usi.dag.profiler.threadlocal;
+package ch.usi.dag.profiler.library;
+
+import ch.usi.dag.profiler.common.SiteProfile;
 
 public class MultiCounterSiteProfile implements SiteProfile<MultiCounterSiteProfile> {
 

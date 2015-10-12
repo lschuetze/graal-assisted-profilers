@@ -1,4 +1,4 @@
-package ch.usi.dag.profiler.threadlocal;
+package ch.usi.dag.profiler.common;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class MetaProfile<T extends SiteProfile<T>> {
+class MetaProfile<T extends SiteProfile<T>> {
 
 	private HashMap<String, T> profiles = new HashMap<>();
 

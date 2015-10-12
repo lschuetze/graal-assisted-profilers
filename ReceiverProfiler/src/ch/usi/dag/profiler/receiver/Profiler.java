@@ -1,18 +1,18 @@
 package ch.usi.dag.profiler.receiver;
 
-import ch.usi.dag.profiler.threadlocal.ProfileSet;
-import ch.usi.dag.profiler.threadlocal.SamplingClock;
+import ch.usi.dag.profiler.common.ThreadLocalProfile;
 
 public class Profiler {
 
 	public static int itr_count = 0;
 
-	static final ProfileSet<CallsiteProfile> profiler = ProfileSet.getInstance(CallsiteProfile::new);
+	static final ThreadLocalProfile<CallsiteProfile> profile = ThreadLocalProfile.create(CallsiteProfile::new);
 
 	public static void profileInvocation(String key, Object receiver) {
-		if (SamplingClock.shouldProfile()) {
-			profiler.getSiteProfile(key).collect(receiver.getClass().getName(), new Exception().getStackTrace());
-		}
+		// Do not inline the following assignment. The enclosing method is
+		// relevant to the value.
+		final StackTraceElement[] traces = new Exception().getStackTrace();
+		profile.applyAtSite(key, p -> p.collect(receiver.getClass().getName(), traces));
 	}
 
 }

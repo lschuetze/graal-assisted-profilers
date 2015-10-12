@@ -1,4 +1,4 @@
-package ch.usi.dag.profiler.threadlocal;
+package ch.usi.dag.profiler.common;
 
 public interface SiteProfile<T> {
 

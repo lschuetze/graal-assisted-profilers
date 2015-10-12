@@ -1,8 +1,7 @@
 package ch.usi.dag.profiler.lock;
 
-import ch.usi.dag.profiler.threadlocal.MultiCounterSiteProfile;
-import ch.usi.dag.profiler.threadlocal.ProfileSet;
-import ch.usi.dag.profiler.threadlocal.SamplingClock;
+import ch.usi.dag.profiler.common.ThreadLocalProfile;
+import ch.usi.dag.profiler.library.MultiCounterSiteProfile;
 
 public class Profiler {
 
@@ -16,13 +15,11 @@ public class Profiler {
 	// case 7: +lock{cas}
 	public static final int CASE = 8;
 
-	static final ProfileSet<MultiCounterSiteProfile> profiler = ProfileSet
-			.getInstance(() -> new MultiCounterSiteProfile(CASE));
+	static final ThreadLocalProfile<MultiCounterSiteProfile> profile = ThreadLocalProfile
+			.create(() -> new MultiCounterSiteProfile(CASE));
 
 	public static void profileLock(String key, int type) {
-		if (SamplingClock.shouldProfile()) {
-			profiler.getSiteProfile(key).increment(type + 1);
-		}
+		profile.applyAtSite(key, p -> p.increment(type + 1));
 	}
 
 }

@@ -1,10 +1,10 @@
-package ch.usi.dag.profiler.threadlocal;
+package ch.usi.dag.profiler.common;
 
 import ch.usi.dag.disl.annotation.Before;
 import ch.usi.dag.disl.annotation.ThreadLocal;
 import ch.usi.dag.disl.marker.BodyMarker;
 
-public class Instrumentation {
+class Instrumentation {
 
 	@ThreadLocal
 	static int __samplingCounter = 0;

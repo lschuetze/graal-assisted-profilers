@@ -1,4 +1,4 @@
-package ch.usi.dag.profiler.staticcontext;
+package ch.usi.dag.profiler.context;
 
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;

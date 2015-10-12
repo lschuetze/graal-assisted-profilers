@@ -3,7 +3,7 @@ package ch.usi.dag.callback;
 import org.dacapo.harness.Callback;
 import org.dacapo.harness.CommandLineArgs;
 
-import ch.usi.dag.profiler.threadlocal.ProfileSet;
+import ch.usi.dag.profiler.common.ThreadLocalProfile;
 
 public class ProfilerCallback extends Callback {
 
@@ -15,14 +15,14 @@ public class ProfilerCallback extends Callback {
 
 	@Override
 	public void start(String benchmark) {
-		ProfileSet.reset();
+		ThreadLocalProfile.reset();
 		super.start(benchmark);
 	}
 
 	@Override
 	public void complete(String benchmark, boolean valid, boolean warmup) {
 		super.complete(benchmark, valid, warmup);
-		ProfileSet.dump(benchmark + "-" + iteration++);
+		ThreadLocalProfile.dump(benchmark + "-" + iteration++);
 	}
 
 }

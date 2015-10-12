@@ -1,4 +1,4 @@
-package ch.usi.dag.profiler.threadlocal;
+package ch.usi.dag.profiler.common;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
@@ -7,15 +7,16 @@ import java.util.function.Supplier;
 import ch.usi.dag.profiler.dump.ArchiveDumper;
 import ch.usi.dag.profiler.dump.Dumper;
 import ch.usi.dag.profiler.dump.TTYDumper;
+import ch.usi.dag.profiler.util.SamplingClock;
 
-public class ProfileSet<T extends SiteProfile<T>> {
+public class ThreadLocalProfile<T extends SiteProfile<T>> {
 
 	private static final boolean DUMP_AT_SHUTDOWN = Boolean.getBoolean("dumptotty");
 
 	private final Supplier<T> siteProfileSupplier;
 	private final ConcurrentLinkedQueue<MetaProfile<T>> profiles = new ConcurrentLinkedQueue<>();
 
-	private ProfileSet(Supplier<T> supplier) {
+	private ThreadLocalProfile(Supplier<T> supplier) {
 		siteProfileSupplier = supplier;
 		if (DUMP_AT_SHUTDOWN) {
 			Runtime.getRuntime().addShutdownHook(new Thread(this::dumpToTTY));
@@ -32,6 +33,12 @@ public class ProfileSet<T extends SiteProfile<T>> {
 			current.__profile = metaProfile;
 		}
 		return metaProfile.getProfile(key, siteProfileSupplier);
+	}
+	
+	public void applyAtSite(String key, Consumer<T> consumer) {
+		if (SamplingClock.shouldProfile()) {
+			consumer.accept(getSiteProfile(key));
+		}
 	}
 
 	public void forEach(Consumer<MetaProfile<T>> consumer) {
@@ -60,16 +67,16 @@ public class ProfileSet<T extends SiteProfile<T>> {
 		}
 	}
 
-	private static volatile ProfileSet<?> profiler;
+	private static volatile ThreadLocalProfile<?> profiler;
 
 	@SuppressWarnings("unchecked")
-	public static <T extends SiteProfile<T>> ProfileSet<T> getInstance(Supplier<T> supplier) {
-		ProfileSet<T> result = (ProfileSet<T>) profiler;
+	public static <T extends SiteProfile<T>> ThreadLocalProfile<T> create(Supplier<T> supplier) {
+		ThreadLocalProfile<T> result = (ThreadLocalProfile<T>) profiler;
 		if (result == null) {
-			synchronized (ProfileSet.class) {
-				result = (ProfileSet<T>) profiler;
+			synchronized (ThreadLocalProfile.class) {
+				result = (ThreadLocalProfile<T>) profiler;
 				if (result == null) {
-					profiler = result = new ProfileSet<>(supplier);
+					profiler = result = new ThreadLocalProfile<>(supplier);
 				}
 			}
 		}
