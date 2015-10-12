@@ -4,7 +4,7 @@ import ch.usi.dag.disl.annotation.AfterReturning;
 import ch.usi.dag.disl.classcontext.ClassContext;
 import ch.usi.dag.disl.dynamiccontext.DynamicContext;
 import ch.usi.dag.disl.marker.BytecodeMarker;
-import ch.usi.dag.profiler.staticcontext.EnhancedBytecodeStaticContext;
+import ch.usi.dag.profiler.context.EnhancedBytecodeStaticContext;
 
 public class Instrumentation {
 
